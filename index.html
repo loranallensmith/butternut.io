@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Butternut.io by loranallensmith</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Butternut.io</h1>
+        <p>Mouth-watering asset compression</p>
+
+        <p class="view"><a href="https://github.com/loranallensmith/butternut.io">View the Project on GitHub <small>loranallensmith/butternut.io</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/loranallensmith/butternut.io/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/loranallensmith/butternut.io/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/loranallensmith/butternut.io">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started</h1>
+
+<p>Butternut is a plugin for bundling assets.
+It integrates with multiple frameworks for a seamless deployment experience.</p>
+
+<h4>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h4>
+
+<ul>
+<li>Custom commands for bundle compression</li>
+<li>Compressed bundle caching</li>
+<li>Bundling and caching of remote assets</li>
+<li>Dev mode, for easy site development with all assets</li>
+<li>Dev-only asset inclusion</li>
+<li>Works with <a href="http://octopress.org/">Octopress</a>
+</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Copy or link <code>asset_bundler.rb</code> into your <code>_plugins</code> folder
+for your project.</p>
+
+<p>If your project is in a git repository, you can easily
+manage your plugins by utilizing git submodules.</p>
+
+<p>To install this plugin as a git submodule:</p>
+
+<pre><code>    git submodule add git://github.com/ipsum/butternut.git _plugins/asset_bundler`
+</code></pre>
+
+<p>To update:</p>
+
+<pre><code>    cd _plugins/asset_bundler
+    git pull origin master
+</code></pre>
+
+<h2>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status</h2>
+
+<p>Currently only supports absolute asset paths in relation to your
+source directory.  For example: <code>/css/mystyle.css</code> looks for a file
+in <code>my_source_dir/css/mystyle.css</code>.</p>
+
+<h4>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO</h4>
+
+<ul>
+<li>Relative paths support</li>
+<li>CoffeeScript and LessCSS compilation support</li>
+</ul>
+
+<h4>
+<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h4>
+
+<p><strong>v0.05</strong> - Changed from using Liquid::Tags to Liquid::Blocks.
+This will break on existing bundle markup if you upgrade.</p>
+
+<p>Why change it?  Well, Liquid::Tags have to be on one line,
+whereas Liquid::Blocks do not, also it opens up some more
+flexibility, as additional options could be included in the
+tag text.</p>
+
+<p><strong>v0.08</strong> - Changed the <code>cdn</code> config parameter to <code>server_url</code> in order to be
+more generic.  For the time being, <code>cdn</code> still works (see below).</p>
+
+<p>Why change it?  There seemed to be a little confusion about the parameter name
+and what the parameter does.</p>
+
+<p><strong>v0.11</strong> - <code>jekyll --watch</code> now turns on dev mode.  Removed code for
+compatibility with versions of Jekyll pre 1.0.</p>
+
+<p>Why change it?  <code>jekyll --watch</code> isn't really supported by the plugin anyway.
+Also, Jekyll is changing and I don't want this to be any more of an
+unmaintainable mess.</p>
+
+<h4>
+<a id="is-it-production-ready" class="anchor" href="#is-it-production-ready" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Is it production ready?</h4>
+
+<p>Consider this beta software, though for small Jekyll sites you
+should have no problem using it.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Once installed in your <code>_plugins</code> folder Jekyll Asset Bundler provides
+Liquid::Blocks to use which will generate the appropriate
+markup for including JavaScript and CSS.
+Each of the following blocks consumes a <a href="http://yaml.org">YAML</a>
+formatted array.</p>
+
+<p>The <code>dev_assets</code> tag includes the normal markup for the referenced
+assets only in 'dev mode'.  The array items can either be local files
+or urls for external scripts and are included as-is.
+At any other time, it does nothing.
+In a future version (hopefully soon), this will play a role in
+utilizing things like LessCSS and CoffeeScript.</p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>Some behavior can be modified with settings in your <code>_config.yml</code>.  The
+following represents the default configuration:</p>
+
+<pre><code>    asset_bundler:
+      compress:
+        js: false
+        css: false
+      base_path: /bundles/
+      server_url:
+      remove_bundled: false
+      dev: false
+      bundle_name: false
+      markup_templates:
+        js: "&lt;script type='text/javascript' src='{{url}}'&gt;&lt;/script&gt;\n"
+        css: "&lt;link rel='stylesheet' type='text/css' href='{{url}}' /&gt;\n"
+</code></pre>
+
+<p>Here is a breakdown of each configuration option under the top level
+<code>asset_bundler</code> key.</p>
+
+<h3>
+<a id="compress" class="anchor" href="#compress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>compress:</h3>
+
+<p>Compresses nothing by default. Change the <code>js</code> and <code>css</code> keys to
+modify compression behavior.</p>
+
+<h4>
+<a id="js" class="anchor" href="#js" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>js:</h4>
+
+<p>To compress with the yui-compressor gem, use 'yui' here,
+to compress with the closure compiler gem, use 'closure' here.</p>
+
+<pre><code>compress:
+  js: yui
+</code></pre>
+
+<p>To compress with a system command, enter it for the
+appropriate asset type:</p>
+
+<pre><code>compress:
+  js: uglifyjs :infile -o :outfile -c
+</code></pre>
+
+<p>This example will run a <code>uglifyjs</code> command from your PATH
+while substituting :outfile and :infile for temporary files
+stored in <code>_asset_bundler_cache</code>.</p>
+
+<p>If either :outfile or :infile are omitted, stdout and
+stdin will be used.  <em>WARNING</em>, stdin and stdout are done
+with IO.popen , which doesn't work on Windows</p>
+
+<p><strong>Note:</strong> Some have reported other issues when using the yui-compressor or
+closure compiler gems on Windows. If you having trouble on windows, try
+specifying a command as outlined above.</p>
+
+<h4>
+<a id="css" class="anchor" href="#css" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>css:</h4>
+
+<p>Takes the exact same arguments as <code>js:</code>, with the exception
+of the Google Closure Compiler ( it's JavaScript only ).</p>
+
+<h3>
+<a id="base_path" class="anchor" href="#base_path" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>base_path:</h3>
+
+<p>Where the bundles will be copied within your destination
+folder.</p>
+
+<p>Default: <code>/vendor/bundles/</code>.</p>
+
+<h3>
+<a id="server_url" class="anchor" href="#server_url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>server_url:</h3>
+
+<p><strong>NOTE:</strong> In v0.07 and earlier this setting was <code>cdn</code>.  The <code>cdn</code> key still
+works and will act as an alias.  However, if the <code>server_url</code> key is set, it
+will override <code>cdn</code>.</p>
+
+<p>The root path of your server_url or CDN (if you use one).
+For example: <a href="http://my-cdn.cloudfront.net/">http://my-cdn.cloudfront.net/</a></p>
+
+<p>Jekyll Asset Bundler checks to make sure that this setting ends in a slash.</p>
+
+<p>Default: <code></code> (blank).</p>
+
+<h3>
+<a id="remove_bundled" class="anchor" href="#remove_bundled" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>remove_bundled:</h3>
+
+<p>If set to true, will remove the files included in your
+bundles from the destination folder.</p>
+
+<p>Default: <code>false</code>.</p>
+
+<h3>
+<a id="dev" class="anchor" href="#dev" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dev:</h3>
+
+<p><strong>NOTE:</strong> In v0.10 and earlier, dev mode was not enabled automatically for
+<code>--auto</code> or <code>--watch</code> mode.</p>
+
+<p>If set to true, enables dev mode.  When dev mode is active,
+no bundles are created and all the referenced files are
+included individually without modification.</p>
+
+<p>Dev mode is also automatically enabled when using
+<code>jekyll server</code>, <code>jekyll --watch</code> or when a top level configuration key: <code>dev</code>
+is set to true.</p>
+
+<p>Default: <code>false</code>.</p>
+
+<h3>
+<a id="bundle_name" class="anchor" href="#bundle_name" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bundle_name:</h3>
+
+<p>Overrides bundle name. When false, MD5 hash of the content is used instead.</p>
+
+<p>Default: <code>false</code>.</p>
+
+<h3>
+<a id="markup_templates" class="anchor" href="#markup_templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>markup_templates:</h3>
+
+<p>Use the relevant markup_template options to override the default templates
+for inserting bundles.  Each option is parsed with <code>Liquid::Template.parse</code>
+and passed a <code>url</code> (String) parameter.</p>
+
+<p><strong>Note:</strong> if you want newlines to be passed in properly, be sure to quote your
+templates in <code>_config.yml</code>.</p>
+
+<h4>
+<a id="js-1" class="anchor" href="#js-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>js:</h4>
+
+<p>The default JavaScript markup is fairly verbose.  If you would like a modern
+replacement, try <code>"&lt;script src='{{url}}'&gt;&lt;/script&gt;\n"</code>.</p>
+
+<p>Default: <code>"&lt;script type='text/javascript' src='{{url}}'&gt;&lt;/script&gt;\n"</code></p>
+
+<h4>
+<a id="css-1" class="anchor" href="#css-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>css:</h4>
+
+<p>The default CSS is also verbose.  If you would like a modern
+replacement, try <code>"&lt;link rel=stylesheet href='{{url}}'&gt;\n"</code>.</p>
+
+<p>Default: <code>"&lt;link rel='stylesheet' type='text/css' href='{{url}}' /&gt;\n"</code></p>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>Jekyll Asset Bundler uses the
+<a href="https://github.com/sstephenson/ruby-yui-compressor">yui-compressor</a> or
+<a href="https://github.com/documentcloud/closure-compiler">closure-compiler</a> gems
+(when configured) and (obviously)
+<a href="http://jekyllrb.com">Jekyll</a>.</p>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Colin Kennedy, moshen on GitHub</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p><a href="http://colken.mit-license.org">MIT</a>,
+see LICENSE file.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/loranallensmith">loranallensmith</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
